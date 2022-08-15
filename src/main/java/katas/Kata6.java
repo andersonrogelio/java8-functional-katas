@@ -11,9 +11,14 @@ import java.util.List;
     Output: String
 */
 public class Kata6 {
+    //Volver a pensarlo a ver si lo logro hacer con un map
     public static String execute() {
         List<Movie> movies = DataUtil.getMovies();
-
-        return "someUrl";
+        String url = movies.stream()
+                .flatMap(movie -> movie.getBoxarts().stream())
+                .reduce((boxArt, boxArt2) -> boxArt.getHeight() * boxArt.getWidth() > boxArt2.getHeight() * boxArt2.getWidth() ? boxArt : boxArt2)
+                .get()
+                .getUrl();
+        return url;
     }
 }

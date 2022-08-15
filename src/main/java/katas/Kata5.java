@@ -16,9 +16,36 @@ import java.util.Map;
     Output: Double
 */
 public class Kata5 {
+
     public static Double execute() {
         List<Movie> movies = DataUtil.getMovies();
-
-        return 3.0;
+        Double rating = movies.stream()
+                .map(movie -> movie.getRating())
+                .reduce(0.0,(rating1,rating2)->rating1 > rating2 ? rating1:rating2);
+        return rating;
     }
+
+
+
+
+
+
+
+
+
+
+//forma adryan
+//    public static Double execute() {
+//        List<Movie> movies = DataUtil.getMovies();
+//        return movies.stream().map(movie -> movie.getRating())
+//                .reduce(0.0, (rating1, rating2) -> rating1 > rating2 ? rating1 : rating2);
+//    }
+//forma gianni
+//List<Movie> movies = DataUtil.getMovies();
+//
+//    Double res = movies.stream()
+//            .map(movie -> movie.getRating())
+//            .reduce(0.0, Double::max);
+//
+//        return res;
 }

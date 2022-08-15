@@ -6,6 +6,7 @@ import util.DataUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -63,8 +64,26 @@ public class Kata11 {
         List<Map> boxArts = DataUtil.getBoxArts();
         List<Map> bookmarkList = DataUtil.getBookmarkList();
 
-        return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
-                ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
-        )));
+        List<Map> listaDeVideosConDetalles = lists.stream().map(l->
+                ImmutableMap.of("name", l.get("name"),
+                        "videos", videos.stream()
+                                .filter( video-> video.get("listId").equals(l.get("id")))
+                                .map(videoselect-> ImmutableList.of("id",videoselect.get("id"),
+                                        "title", videoselect.get("title"),
+                                         "time", bookmarkList.stream()
+                                                .filter(bookmark-> bookmark.get("videoId").equals(videoselect.get("id")))
+                                                .findAny()
+                                                .map(time-> time.get("time")),
+                                        "boxart", boxArts.stream()
+                                                .filter(boxs->videoselect.get("id").equals(boxs.get("videoId")))
+                                                .reduce((boxArt, boxArt2) -> Integer.parseInt(boxArt.get("height").toString()) * Integer.parseInt(boxArt.get("width").toString()) > Integer.parseInt(boxArt2.get("height").toString()) * Integer.parseInt(boxArt2.get("width").toString()) ? boxArt : boxArt2)
+                                                .map(box->box.get("url"))))
+                                .collect(Collectors.toUnmodifiableList()) )
+        ).collect(Collectors.toUnmodifiableList());
+
+//        System.out.println(listaDeVideosConDetalles);
+
+return listaDeVideosConDetalles;
+
     }
 }
